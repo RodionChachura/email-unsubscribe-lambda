@@ -2,37 +2,19 @@ variable "name" {
   default = "pomodoro-subscriber"
 }
 
-// for gateway.tf
-variable "domain" {
-  default = "pomodoro.increaser.org"
-}
-
-variable "zone_id" {
-  default = "<YOUR_ROUTE_53_ZONE_ID>"
-}
-
-variable "certificate_arn" {
-  default = "<YOUR_DOMAIN_CERTIFICATE_ARN>"
-}
+# OPTIONAL:
 
 # if you use Sentry for errors reporting
-variable "sentry_key" {
-  default = "https://random_string@sentry.io/random_id"
-}
+variable "sentry_key" {}
 
-# for cd.tf
-variable "ci_container_name" {
-  default = "api"
-}
+// if you have a domain
+variable "domain" {}
+variable "zone_id" {}
+variable "certificate_arn" {}
 
-variable "repo_owner" {
-  default = "RodionChachura"
-}
 
-variable "repo_name" {
-  default = "pomodoro-subscriber"
-}
-
-variable "branch" {
-  default = "master"
-}
+# if you want to use AWS CodePipeline for CD
+variable "ci_container_name" {}
+variable "repo_owner" {}
+variable "repo_name" {}
+variable "branch" {}

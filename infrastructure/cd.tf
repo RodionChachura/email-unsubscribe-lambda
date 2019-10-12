@@ -1,11 +1,14 @@
 resource "aws_s3_bucket" "artifacts" {
+  count = "${var.ci_container_name != "" ? 1 : 0}"
+
   bucket = "tf-${var.name}-pipeline-artifacts"
   acl    = "private"
 }
 
 resource "aws_iam_role" "codepipeline_role" {
-  name = "tf-${var.name}-pipeline"
+  count = "${var.ci_container_name != "" ? 1 : 0}"
 
+  name = "tf-${var.name}-pipeline"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -23,6 +26,8 @@ EOF
 }
 
 resource "aws_iam_role_policy" "codepipeline_policy" {
+  count = "${var.ci_container_name != "" ? 1 : 0}"
+
   name = "tf-${var.name}-pipeline"
   role = "${aws_iam_role.codepipeline_role.id}"
   policy = <<EOF
@@ -40,8 +45,9 @@ EOF
 }
 
 resource "aws_iam_role" "codebuild_role" {
-  name = "tf-${var.name}-codebuild-role"
+  count = "${var.ci_container_name != "" ? 1 : 0}"
 
+  name = "tf-${var.name}-codebuild-role"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -59,8 +65,9 @@ EOF
 }
 
 resource "aws_iam_role_policy" "codebuild_policy" {
-  role        = "${aws_iam_role.codebuild_role.name}"
+  count = "${var.ci_container_name != "" ? 1 : 0}"
 
+  role        = "${aws_iam_role.codebuild_role.name}"
   policy = <<POLICY
 {
     "Version": "2012-10-17",
@@ -76,6 +83,8 @@ POLICY
 }
 
 resource "aws_codebuild_project" "codebuild" {
+  count = "${var.ci_container_name != "" ? 1 : 0}"
+
   name         = "tf-codebuild-${var.name}"
   service_role = "${aws_iam_role.codebuild_role.arn}"
 
@@ -101,6 +110,8 @@ resource "aws_codebuild_project" "codebuild" {
 }
 
 resource "aws_codepipeline" "pipeline" {
+  count = "${var.ci_container_name != "" ? 1 : 0}"
+
   name     = "tf-${var.name}-pipeline"
   role_arn = "${aws_iam_role.codepipeline_role.arn}"
 
