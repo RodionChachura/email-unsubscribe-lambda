@@ -17,15 +17,8 @@ exports.handler = async ({ path }, context, callback) => {
       body
     })
   } catch (error) {
-    if (error instanceof BadRequest) {
-      callback(null, {
-        statusCode: 400,
-        headers: {
-          'Content-Type': 'text/html'
-        },
-        body: error.message
-      })
-    } else {
+    const isBadRequest = error instanceof BadRequest
+    if (!isBadRequest) {
       console.log(error)
       Sentry.withScope(scope => {
         scope.setExtra('path', path)
@@ -33,5 +26,12 @@ exports.handler = async ({ path }, context, callback) => {
       })
       await Sentry.flush(2000)
     }
+    callback(null, {
+      statusCode: 400,
+      headers: {
+        'Content-Type': 'text/html'
+      },
+      body: isBadRequest ? error.message : 'internal error'
+    })
   }
 }
