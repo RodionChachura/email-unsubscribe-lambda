@@ -46,6 +46,8 @@ module.exports = async (type, id, handler) => {
   const html = await new Promise(resolve => fs.readFile(filePath, 'utf8', (_, data) => resolve(data)))
   if (type === TYPE.POMODORO_NEWS_EMAIL) {
     await setNewValue(params, 'ignorePomodoroNews', true)
+  } else {
+    await setNewValue(params, 'ignoreEmails', true)
   }
 
   const content = CONTENT[Object.entries(TYPE).find(([, v]) => v === type)[0]]
